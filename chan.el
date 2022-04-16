@@ -85,7 +85,7 @@ Respects chanel-allow-nsfw."
 
 
 (defun chanel-imageboard-make-records-from-links (links)
-  "Creates imageboard records from LINKS."
+  "Create imageboard records from LINKS."
   (--map
    (record 'imageboard
            (chanel-imageboard-name-from-a-node it)
@@ -102,7 +102,26 @@ chanel-allow-nsfw will be respected."
     (chanel-imageboard-list-url))))
 
 
+
+
 ;; UI
+(defun chanel-merge-lines (lines)
+  "Merge all LINES into one big chunk of text."
+  (--reduce (format "%s\n%s" acc it) lines))
+
+(defun chanel-imageboard-display-record (imageboard)
+  "Return displayable text if IMAGEBOARD."
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<down-mouse-1>")
+      `(lambda() (interactive) (message-box ,(aref imageboard 3))))
+    (propertize
+     (format "%-8s%s" (aref imageboard 2) (aref imageboard 1))
+     'mouse-face 'highlight
+     'keymap map)))
+
+(defun chanel-imageboard-display-records (imageboards)
+  "Return displayable text of IMAGEBOARDS."
+  (chanel-merge-lines (--map (chanel-imageboard-display-record it) imageboards)))
 
 
 ;; Navigation
@@ -120,11 +139,10 @@ chanel-allow-nsfw will be respected."
 (defun chanel ()
   "Open the board list."
   (interactive)
-  (pop-to-buffer "board list - chanel")
+  (pop-to-buffer "imageboard list - chanel")
   ;; (chanel-mode)
   (erase-buffer)
-  (insert "Imageboard list\n\n")
-  (insert (--reduce (format "%s\n%s" acc (aref it 1 )) (chanel-imageboard-list))))
+  (insert (chanel-imageboard-display-records (chanel-imageboard-list))))
 
 
 
