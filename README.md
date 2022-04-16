@@ -1,2 +1,2 @@
 # chanel
-Emacs Lisp imageboard viewer for 4chan and similar imageboards
+Emacs Lisp imageboard viewer for 4chan
