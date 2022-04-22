@@ -6,7 +6,7 @@
 ;; Maintainer: Niklas Loeser <niklas@4loeser.net>
 ;; Created: April 15, 2022
 ;; Modified: April 15, 2022
-;; Version: 0.0.1
+;; Version: 1.0.0
 ;; Keywords: hypermedia, multimedia
 ;; Homepage: https://github.com/data-niklas/chan
 ;; Package-Requires: ((dash "2.19.1") (emacs "27.1"))
