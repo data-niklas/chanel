@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Keywords: hypermedia, multimedia
 ;; Homepage: https://github.com/data-niklas/chan
-;; Package-Requires: ((dash "2.19.1") (emacs "25.1"))
+;; Package-Requires: ((dash "2.19.1") (emacs "27.1"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -61,6 +61,17 @@
   :group 'chanel
   :type 'boolean)
 
+;; Mode
+(defvar chanel-mode-hook nil)
+(defvar chanel-mode-map (make-sparse-keymap)
+  "Keymap for chanel major mode.")
+(define-key chanel-mode-map "n" 'chanel-next-image)
+(define-key chanel-mode-map "p" 'chanel-previous-image)
+
+
+(define-derived-mode chanel-mode nil "Chanel"
+  "4chan imageboard mode."
+  :group 'chanel :keymap chanel-mode-map)
 
 ;; Logic
 (defun chanel-retrieve-json-synchronous (url)
@@ -151,11 +162,11 @@ Each imageboard is represented as a record."
 
 (defun chanel-decode-html-entities (text)
   "Decodes HTML entities in TEXT."
-(replace-regexp-in-string
- "&#[0-9]*;"
- (lambda (match)
-   (format "%c" (string-to-number (substring match 2 -1))))
- text))
+  (replace-regexp-in-string
+   "&#[0-9]*;"
+   (lambda (match)
+     (format "%c" (string-to-number (substring match 2 -1))))
+   text))
 
 ;; UI
 ;; Utils
@@ -315,7 +326,9 @@ Only images will be displayed."
   (interactive "s")
   (pop-to-buffer-same-window (format "/%s/" board))
   (erase-buffer)
-  (chanel-threads-display-threads (chanel-thread-list board) board))
+  (chanel-threads-display-threads (chanel-thread-list board) board)
+  (goto-char (point-min))
+  (chanel-mode))
 
 (defun chanel-thread (board thread)
   "Display a single THREAD of BOARD."
@@ -324,7 +337,9 @@ Only images will be displayed."
   (erase-buffer)
   (chanel-posts-display-posts
    (chanel-post-list board thread)
-   board))
+   board)
+  (goto-char (point-min))
+  (chanel-mode))
 
 (defun chanel-thread-images (board thread)
   "Display all images of THREAD of BOARD."
@@ -333,7 +348,19 @@ Only images will be displayed."
   (erase-buffer)
   (chanel-posts-display-posts-images
    (chanel-post-list board thread)
-   board))
+   board)
+  (goto-char (point-min))
+  (chanel-mode))
+
+(defun chanel-next-image ()
+  "Jump to the next image."
+  (interactive)
+  (text-property-search-forward 'display nil nil))
+
+(defun chanel-previous-image ()
+  "Jump to the previous image."
+  (interactive)
+  (text-property-search-backward 'display nil nil))
 
 (provide 'chan)
 ;;; chan.el ends here
