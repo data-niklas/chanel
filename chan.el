@@ -303,17 +303,6 @@ Only images will be displayed."
 
 
 ;; Navigation
-(defun chanel-entry-next ()
-  "Focus the next entry in the current buffer."
-  (interactive)
-  (message "To be done."))
-
-(defun chanel-entry-previous ()
-  "Focus the previous entry in the current buffer."
-  (interactive)
-  (message "To be done."))
-
-
 (defun chanel ()
   "Open the board list."
   (interactive)
@@ -323,7 +312,7 @@ Only images will be displayed."
 
 (defun chanel-threads (board)
   "Display a list of all threads for BOARD."
-  (interactive "s")
+  (interactive "sBoard code: ")
   (pop-to-buffer-same-window (format "/%s/" board))
   (erase-buffer)
   (chanel-threads-display-threads (chanel-thread-list board) board)
@@ -332,7 +321,7 @@ Only images will be displayed."
 
 (defun chanel-thread (board thread)
   "Display a single THREAD of BOARD."
-  (interactive "s\ns")
+  (interactive "sBoard code: \nsThread id: ")
   (pop-to-buffer-same-window (format "/%s/%s" board thread))
   (erase-buffer)
   (chanel-posts-display-posts
@@ -343,7 +332,7 @@ Only images will be displayed."
 
 (defun chanel-thread-images (board thread)
   "Display all images of THREAD of BOARD."
-  (interactive "s\ns")
+  (interactive "sBoard code: \nsThread id: ")
   (pop-to-buffer (format "/%s/%s" board thread))
   (erase-buffer)
   (chanel-posts-display-posts-images
@@ -355,12 +344,14 @@ Only images will be displayed."
 (defun chanel-next-image ()
   "Jump to the next image."
   (interactive)
-  (text-property-search-forward 'display nil nil))
+  (text-property-search-forward 'display nil nil)
+  (recenter))
 
 (defun chanel-previous-image ()
   "Jump to the previous image."
   (interactive)
-  (text-property-search-backward 'display nil nil))
+  (text-property-search-backward 'display nil nil)
+  (recenter))
 
 (provide 'chan)
 ;;; chan.el ends here
